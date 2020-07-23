@@ -18,6 +18,7 @@ require('./config/passport');
 
 app.set('port', process.env.PORT || 4000); // Set the port number to listen for incoming requests
 app.set('views', path.join(__dirname, 'views'));
+
 app.engine('.hbs', exphbs({
   defaultLayout: 'main',
   layoutsDir: path.join(app.get('views'), 'layouts'),

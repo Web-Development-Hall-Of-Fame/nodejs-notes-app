@@ -1,10 +1,6 @@
 const usersCtrl = {};
-
-// Models
-const User = require('../models/User');
-
-// Modules
-const passport = require("passport");
+const User = require('../models/User'); // Import the User Model
+const passport = require("passport"); // Import the PassportJS API
 
 usersCtrl.renderSignUpForm = (req, res) => {
   res.render('users/signup');
@@ -13,34 +9,44 @@ usersCtrl.renderSignUpForm = (req, res) => {
 usersCtrl.singup = async (req, res) => {
   let errors = [];
   const { name, email, password, confirm_password } = req.body;
-  if (password != confirm_password) {
-    errors.push({ text: "Passwords do not match." });
+  
+  if (password != confirm_password) { // If the passwords don't match
+    errors.push({ text: "Passwords do not match." }); // Push the error
   }
-  if (password.length < 4) {
+  
+  if (password.length < 4) { // If the length of the password is < 4 characters
     errors.push({ text: "Passwords must be at least 4 characters." });
   }
-  if (errors.length > 0) {
-    res.render("users/signup", {
+  
+  if (errors.length > 0) { // If there are more than 0 errors
+    res.render("users/signup", { // Render the sign-up page
       errors,
       name,
       email,
       password,
       confirm_password
     });
-  } else {
+  } 
+  
+  else {
     // Look for email coincidence
     const emailUser = await User.findOne({ email: email });
+    
     if (emailUser) {
       req.flash("error_msg", "The Email is already in use.");
       res.redirect("/users/signup");
-    } else {
+    }
+    
+    else {
       // Saving a New User
       const newUser = new User({ name, email, password });
       newUser.password = await newUser.encryptPassword(password);
+      
       await newUser.save();
       req.flash("success_msg", "You are registered.");
       res.redirect("/users/signin");
     }
+    
   }
 };
 
@@ -60,4 +66,4 @@ usersCtrl.logout = (req, res) => {
   res.redirect("/users/signin");
 };
 
-module.exports = usersCtrl;
+module.exports = usersCtrl; // Export the User Controller

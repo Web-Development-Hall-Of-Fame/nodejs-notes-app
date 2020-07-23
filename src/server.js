@@ -1,20 +1,22 @@
-const express = require('express');
+const express = require('express'); // Imports ExpressAPI Library
 const exphbs = require('express-handlebars');
+
 const path = require('path');
 const methodOverride = require('method-override');
+
 const session = require('express-session');
 const flash = require('connect-flash');
+
 const passport = require('passport');
 const morgan = require('morgan');
-const connectMongo = require('connect-mongo');
-const mongoose = require('mongoose');
 
-// Initializations
-const app = express();
+const connectMongo = require('connect-mongo');
+const mongoose = require('mongoose'); // Imports Mongoose API library
+
+const app = express(); // Creates an instance of express
 require('./config/passport');
 
-// settings
-app.set('port', process.env.PORT || 4000);
+app.set('port', process.env.PORT || 4000); // Set the port number to listen for incoming requests
 app.set('views', path.join(__dirname, 'views'));
 app.engine('.hbs', exphbs({
   defaultLayout: 'main',
@@ -22,12 +24,13 @@ app.engine('.hbs', exphbs({
   partialsDir: path.join(app.get('views'), 'partials'),
   extname: '.hbs'
 }));
-app.set('view engine', '.hbs');
 
-// middlewares
-app.use(morgan('dev'));
+app.set('view engine', '.hbs');
+app.use(morgan('dev')); // Uses the morgan middleware
+
 app.use(express.urlencoded({extended: false}));
 app.use(methodOverride('_method'));
+
 const MongoStore = connectMongo(session);
 app.use(session({
   secret: 'secret',
@@ -35,6 +38,7 @@ app.use(session({
   saveUninitialized: true,
   store: new MongoStore({mongooseConnection: mongoose.connection})
 }));
+
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
@@ -48,12 +52,11 @@ app.use((req, res, next) => {
   next();
 });
 
-// routes
-app.use(require('./routes/index.routes'));
-app.use(require('./routes/users.routes'));
+app.use(require('./routes/index.routes')); // Uses the index routes
+app.use(require('./routes/users.routes')); // Makes use of the users routes
 app.use(require('./routes/notes.routes'));
 
 // static files
 app.use(express.static(path.join(__dirname, 'public')));
 
-module.exports = app;
+module.exports = app; // Exports the app module

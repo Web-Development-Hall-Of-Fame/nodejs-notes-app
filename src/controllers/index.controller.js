@@ -1,11 +1,22 @@
 const indexCtrl = {};
+const okCode = 200;
 
-indexCtrl.renderIndex = (req, res) => {
-  res.render('index');
+indexCtrl.renderIndex = (request, response) => { // Renders the Index Page
+  const requestMethod = request.method
+  
+  if(requestMethod === 'GET') {
+    return response.status(okCode).render('index');
+  }
+  
 };
 
-indexCtrl.renderAbout = (req, res) => {
-  res.render('about');
+indexCtrl.renderAbout = (request, response) => { // Renders the About Page
+  const requestMethod = request.method;
+  
+  if(requestMethod === 'GET') {
+    return response.status(okCode).render('about');
+  }
+  
 };
 
 module.exports = indexCtrl;
